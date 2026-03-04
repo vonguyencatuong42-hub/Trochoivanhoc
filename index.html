@@ -5,7 +5,6 @@
 <title>Trò Chơi Văn Học</title>
 
 <style>
-/* Giữ nguyên CSS của bạn */
 body{
     margin:0;
     font-family:"Times New Roman", serif;
@@ -243,6 +242,50 @@ button:active {
 .replay-button:active {
     transform: scale(0.95);
 }
+
+/* Style cho nút điều khiển nhạc */
+.music-control {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    gap: 10px;
+}
+
+.music-btn {
+    padding: 12px 24px;
+    font-size: 16px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+.music-btn.on {
+    background: rgba(76, 175, 80, 0.9);
+    color: white;
+}
+
+.music-btn.off {
+    background: rgba(255, 87, 87, 0.9);
+    color: white;
+}
+
+.music-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+
+.music-btn:active {
+    transform: scale(0.95);
+}
+
+/* ĐÃ XÓA PHẦN #musicStatus */
 </style>
 </head>
 
@@ -268,7 +311,19 @@ button:active {
 
 </div>
 
-<!-- ÂM THANH - ĐÃ SỬA ĐỂ TƯƠNG THÍCH VỚI GITHUB -->
+<!-- NÚT ĐIỀU KHIỂN NHẠC THỦ CÔNG -->
+<div class="music-control">
+    <button id="musicToggleBtn" class="music-btn off" onclick="toggleMusic()">
+        🔇 Bật nhạc
+    </button>
+    <button id="musicVolumeBtn" class="music-btn" onclick="adjustVolume()" style="background: rgba(255, 193, 7, 0.9);">
+        🔊 Volume: 25%
+    </button>
+</div>
+
+<!-- ĐÃ XÓA div musicStatus -->
+
+<!-- ÂM THANH -->
 <audio id="bgmusic" loop preload="auto">
     <source src="nhacnen.mp3" type="audio/mpeg">
     <source src="nhacnen.ogg" type="audio/ogg">
@@ -296,50 +351,103 @@ button:active {
 </audio>
 
 <script>
-// ===== KIỂM TRA FILE TỒN TẠI =====
-console.log("Đang tải game...");
+// ===== BIẾN ĐIỀU KHIỂN NHẠC =====
+let isMusicPlaying = false;
+let currentVolume = 0.25; // 25%
 
-// ===== NHẠC NỀN - ĐÃ SỬA =====
+// ===== NHẠC NỀN =====
 const bgMusic = document.getElementById("bgmusic");
-bgMusic.volume = 0.2; // Giảm volume một chút
+bgMusic.volume = currentVolume;
 
-function playBackgroundMusic() {
-    // Thử phát nhạc nền
-    let playPromise = bgMusic.play();
+// ===== CẬP NHẬT GIAO DIỆN NÚT NHẠC =====
+function updateMusicUI() {
+    const musicBtn = document.getElementById("musicToggleBtn");
+    const volumeBtn = document.getElementById("musicVolumeBtn");
     
-    if (playPromise !== undefined) {
-        playPromise.then(() => {
-            console.log("Nhạc nền đang phát");
-        }).catch(error => {
-            console.log("Không thể phát nhạc nền tự động:", error);
-            // Tạo nút bật nhạc thủ công nếu cần
-            showMusicButton();
-        });
+    if (isMusicPlaying) {
+        musicBtn.innerHTML = "🔊 Tắt nhạc";
+        musicBtn.className = "music-btn on";
+    } else {
+        musicBtn.innerHTML = "🔇 Bật nhạc";
+        musicBtn.className = "music-btn off";
     }
+    
+    volumeBtn.innerHTML = `🔊 Volume: ${Math.round(currentVolume * 100)}%`;
 }
 
-// Tạo nút bật nhạc nếu trình duyệt chặn autoplay
-function showMusicButton() {
-    let musicBtn = document.createElement('button');
-    musicBtn.innerHTML = '🔊 Bật nhạc nền';
-    musicBtn.style.position = 'fixed';
-    musicBtn.style.bottom = '20px';
-    musicBtn.style.right = '20px';
-    musicBtn.style.zIndex = '9999';
-    musicBtn.style.padding = '10px 20px';
-    musicBtn.style.background = '#ffd700';
-    musicBtn.style.color = 'black';
-    musicBtn.style.border = 'none';
-    musicBtn.style.borderRadius = '30px';
-    musicBtn.style.cursor = 'pointer';
-    musicBtn.style.fontWeight = 'bold';
+// ===== BẬT/TẮT NHẠC =====
+function toggleMusic() {
+    if (isMusicPlaying) {
+        bgMusic.pause();
+        isMusicPlaying = false;
+    } else {
+        let playPromise = bgMusic.play();
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                isMusicPlaying = true;
+                updateMusicUI();
+            }).catch(error => {
+                console.log("Không thể phát nhạc:", error);
+                alert("Không thể phát nhạc. Vui lòng kiểm tra file nhạc hoặc thử lại sau.");
+            });
+            return;
+        }
+    }
+    updateMusicUI();
+}
+
+// ===== ĐIỀU CHỈNH ÂM LƯỢNG =====
+function adjustVolume() {
+    // Tăng âm lượng theo vòng tròn: 25% -> 50% -> 75% -> 100% -> 0% -> 25%
+    if (currentVolume === 0.25) {
+        currentVolume = 0.5;
+    } else if (currentVolume === 0.5) {
+        currentVolume = 0.75;
+    } else if (currentVolume === 0.75) {
+        currentVolume = 1.0;
+    } else if (currentVolume === 1.0) {
+        currentVolume = 0;
+    } else {
+        currentVolume = 0.25;
+    }
     
-    musicBtn.onclick = function() {
-        bgMusic.play();
-        this.remove();
-    };
+    bgMusic.volume = currentVolume;
     
-    document.body.appendChild(musicBtn);
+    // Nếu đang ở volume 0 và nhạc đang phát, tạm dừng
+    if (currentVolume === 0 && isMusicPlaying) {
+        bgMusic.pause();
+        isMusicPlaying = false;
+    }
+    
+    // Nếu volume > 0 và nhạc đang tắt, tự động bật nhạc
+    if (currentVolume > 0 && !isMusicPlaying) {
+        bgMusic.play()
+            .then(() => {
+                isMusicPlaying = true;
+            })
+            .catch(e => console.log("Không thể phát nhạc"));
+    }
+    
+    updateMusicUI();
+}
+
+// ===== BẬT NHẠC KHI BẮT ĐẦU GAME (CÓ THỂ BỊ CHẶN) =====
+function playBackgroundMusic() {
+    // Thử phát nhạc nền
+    if (!isMusicPlaying) {
+        let playPromise = bgMusic.play();
+        
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                isMusicPlaying = true;
+                updateMusicUI();
+                console.log("Nhạc nền đang phát");
+            }).catch(error => {
+                console.log("Không thể phát nhạc nền tự động:", error);
+                // Đã có nút bật nhạc thủ công, không cần thông báo thêm
+            });
+        }
+    }
 }
 
 // ===== ÂM THANH CLICK =====
@@ -353,13 +461,47 @@ function playClickSound() {
             let playPromise = clickSound.play();
             if (playPromise !== undefined) {
                 playPromise.catch(e => {
-                    console.log("Không thể play click.mp3, nhưng không sao");
+                    console.log("Không thể play click.mp3");
                 });
             }
         }
     } catch(e) {
         console.log("Lỗi phát âm thanh click:", e);
     }
+}
+
+// ===== CÁC ÂM THANH KHÁC =====
+function playCorrectSound() {
+    try {
+        const sound = document.getElementById("correctSound");
+        if (sound) {
+            sound.currentTime = 0;
+            sound.volume = 0.4;
+            sound.play().catch(e => console.log("Không thể phát âm thanh"));
+        }
+    } catch(e) {}
+}
+
+function playWrongSound() {
+    try {
+        const sound = document.getElementById("wrongSound");
+        if (sound) {
+            sound.currentTime = 0;
+            sound.volume = 0.4;
+            sound.play().catch(e => console.log("Không thể phát âm thanh"));
+        }
+    } catch(e) {}
+}
+
+function playSummarySound() {
+    try {
+        const sound = document.getElementById("summarySound");
+        if (sound) {
+            sound.currentTime = 0;
+            sound.volume = 0.3;
+            sound.play().catch(e => console.log("Không thể phát summary.mp3"));
+        }
+    } catch(e) {}
 }
 
 // ===== BẮT ĐẦU TRÒ CHƠI =====
@@ -422,7 +564,6 @@ let current=0;
 let score=0;
 let streak=0;
 let timer;
-let timeLeft=10;
 let locked=false;
 let maxStreak = 0;
 let userAnswers = [];
@@ -509,11 +650,7 @@ function checkAnswer(index){
         message = "⌛ Hết giờ! Đáp án là: " + correctText;
         bgColor = "rgba(255, 193, 7, 0.95)";
         streak = 0;
-        
-        // Phát âm thanh sai
-        try {
-            document.getElementById("wrongSound").play();
-        } catch(e) {}
+        playWrongSound();
     }
     else if(index === correctIndex){
         score++;
@@ -525,17 +662,13 @@ function checkAnswer(index){
 
         message = "✅ Chính xác!";
         bgColor = "rgba(82, 183, 136, 0.95)";
-        try {
-            document.getElementById("correctSound").play();
-        } catch(e) {}
+        playCorrectSound();
     }
     else{
         message = "❌ Sai rồi! Đáp án đúng là: " + correctText;
         bgColor = "rgba(255, 77, 109, 0.95)";
         streak = 0;
-        try {
-            document.getElementById("wrongSound").play();
-        } catch(e) {}
+        playWrongSound();
         
         document.querySelector('.container').classList.add('shake');
         setTimeout(() => {
@@ -566,16 +699,7 @@ function checkAnswer(index){
 
 function showSummary(){
     document.getElementById("game").classList.add("hidden");
-
-    // Phát âm thanh tổng kết
-    try {
-        const summarySound = document.getElementById("summarySound");
-        if (summarySound) {
-            summarySound.currentTime = 0;
-            summarySound.volume = 0.3;
-            summarySound.play().catch(e => console.log("Không thể phát summary.mp3"));
-        }
-    } catch(e) {}
+    playSummarySound();
 
     let rating = "";
     if(score >= 9) rating = "🌟 Xuất sắc!";
@@ -653,26 +777,11 @@ function replayGame() {
     }, 100);
 }
 
-// Kiểm tra xem các file âm thanh có tồn tại không
+// Khởi tạo giao diện nút nhạc khi load trang
 window.addEventListener('load', function() {
-    console.log("Trang đã load xong!");
-    
-    // Kiểm tra các file âm thanh
-    const audioFiles = ['bgmusic', 'correctSound', 'wrongSound', 'clickSound', 'summarySound'];
-    audioFiles.forEach(id => {
-        let audio = document.getElementById(id);
-        if (audio) {
-            console.log(`Đã tìm thấy ${id}`);
-        } else {
-            console.log(`KHÔNG tìm thấy ${id}`);
-        }
-    });
+    updateMusicUI();
+    console.log("Trang đã load xong! Dùng nút ở góc phải để bật nhạc.");
 });
-
-// Dự phòng: Nếu không có file âm thanh, vẫn chạy game
-window.playClickSound = function() {
-    console.log("Click (âm thanh đã tắt)");
-};
 </script>
 
 </body>
