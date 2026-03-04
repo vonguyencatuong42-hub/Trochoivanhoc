@@ -277,9 +277,14 @@ button:active {
 </div>
 
 <!-- ÂM THANH -->
-<audio id="bgmusic" loop preload="auto">
-    <source src="nhacnen.mp3" type="audio/mpeg">
-</audio>
+<audio id="bgmusic" src="nhacnen.mp3" loop></audio>
+
+<script>
+document.addEventListener("click", function () {
+    const music = document.getElementById("bgmusic");
+    music.play();
+}, { once: true });
+</script>
 <audio id="correctSound" preload="auto"><source src="votay.mp3"></audio>
 <audio id="wrongSound" preload="auto"><source src="tete.mp3"></audio>
 <audio id="clickSound" preload="auto"><source src="click.mp3"></audio>
@@ -615,4 +620,5 @@ function replayGame() {
 </script>
 
 </body>
+
 </html>
