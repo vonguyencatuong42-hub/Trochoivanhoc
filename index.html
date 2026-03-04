@@ -277,7 +277,6 @@ button:active {
 </div>
 
 <!-- ÂM THANH -->
-
 <audio id="bgmusic" src="nhacnen.mp3" loop></audio>
 
 <audio id="correctSound" preload="auto" src="votay.mp3"></audio>
@@ -288,31 +287,34 @@ button:active {
 <script>
 // ===== HÌNH NỀN =====
 document.body.style.backgroundImage = "url('hinhnen.jpg')";
-document.body.style.backgroundSize = "cover";
-document.body.style.backgroundPosition = "center";
-document.body.style.backgroundRepeat = "no-repeat";
-document.body.style.backgroundAttachment = "fixed";
 
 // ===== NHẠC NỀN =====
 const bgMusic = document.getElementById("bgmusic");
 bgMusic.volume = 0.25;
 
-// Khi người dùng click lần đầu -> phát nhạc
-document.addEventListener("click", function () {
-    if (bgMusic.paused) {
-        bgMusic.play().catch(e => console.log("Không phát được:", e));
-    }
-}, { once: true });
+function playBackgroundMusic() {
+    bgMusic.play().catch(e => console.log("Nhạc chưa play được:", e));
+}
 
 // ===== ÂM THANH CLICK =====
 function playClickSound() {
     const clickSound = document.getElementById("clickSound");
     if (clickSound) {
         clickSound.currentTime = 0;
-        clickSound.play().catch(e => console.log("Không thể phát click.mp3"));
+        clickSound.play().catch(e => console.log("Không thể play click.mp3"));
     }
 }
 
+// GẮN VỚI startGame
+function startGame(){
+    playClickSound();      // click sound
+    playBackgroundMusic(); // bật nhạc nền
+
+    document.getElementById("intro").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    showQuestion();
+}
+    
 const questions = [
 {question:"Ai là tác giả của 'Lão Hạc'?",
 answers:["Nam Cao","Tô Hoài","Kim Lân","Nguyễn Du"],
@@ -601,5 +603,6 @@ function replayGame() {
 </body>
 
 </html>
+
 
 
