@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Trò Chơi Văn Học</title>
-
 <style>
 body{
     margin:0;
@@ -243,7 +242,6 @@ button:active {
     transform: scale(0.95);
 }
 
-/* Style cho nút điều khiển nhạc */
 .music-control {
     position: fixed;
     bottom: 20px;
@@ -284,21 +282,15 @@ button:active {
 .music-btn:active {
     transform: scale(0.95);
 }
-
-/* ĐÃ XÓA PHẦN #musicStatus */
 </style>
 </head>
-
 <body>
-
 <div class="container">
-
 <div id="intro">
     <h1>📚 Trò Chơi Văn Học 📚</h1>
     <p>Bạn đã sẵn sàng chưa?</p>
     <button class="green" onclick="startGame()" style="background: #52b788;" id="startButton">Sẵn sàng</button>
 </div>
-
 <div id="game" class="hidden">
     <div class="header">
         <h2 id="question"></h2>
@@ -308,62 +300,40 @@ button:active {
     <div id="timer"></div>
     <div class="grid" id="answers"></div>
 </div>
-
 </div>
-
-<!-- NÚT ĐIỀU KHIỂN NHẠC THỦ CÔNG -->
 <div class="music-control">
-    <button id="musicToggleBtn" class="music-btn off" onclick="toggleMusic()">
-        🔇 Bật nhạc
-    </button>
-    <button id="musicVolumeBtn" class="music-btn" onclick="adjustVolume()" style="background: rgba(255, 193, 7, 0.9);">
-        🔊 Volume: 25%
-    </button>
+    <button id="musicToggleBtn" class="music-btn off" onclick="toggleMusic()">🔇 Bật nhạc</button>
+    <button id="musicVolumeBtn" class="music-btn" onclick="adjustVolume()" style="background: rgba(255, 193, 7, 0.9);">🔊 Volume: 25%</button>
 </div>
-
-<!-- ĐÃ XÓA div musicStatus -->
-
-<!-- ÂM THANH -->
 <audio id="bgmusic" loop preload="auto">
     <source src="nhacnen.mp3" type="audio/mpeg">
     <source src="nhacnen.ogg" type="audio/ogg">
-    Trình duyệt của bạn không hỗ trợ audio
 </audio>
-
 <audio id="correctSound" preload="auto">
     <source src="votay.mp3" type="audio/mpeg">
     <source src="votay.ogg" type="audio/ogg">
 </audio>
-
 <audio id="wrongSound" preload="auto">
     <source src="tete.mp3" type="audio/mpeg">
     <source src="tete.ogg" type="audio/ogg">
 </audio>
-
 <audio id="clickSound" preload="auto">
     <source src="click.mp3" type="audio/mpeg">
     <source src="click.ogg" type="audio/ogg">
 </audio>
-
 <audio id="summarySound" preload="auto">
     <source src="summary.mp3" type="audio/mpeg">
     <source src="summary.ogg" type="audio/ogg">
 </audio>
-
 <script>
-// ===== BIẾN ĐIỀU KHIỂN NHẠC =====
 let isMusicPlaying = false;
-let currentVolume = 0.25; // 25%
-
-// ===== NHẠC NỀN =====
+let currentVolume = 0.25;
 const bgMusic = document.getElementById("bgmusic");
 bgMusic.volume = currentVolume;
 
-// ===== CẬP NHẬT GIAO DIỆN NÚT NHẠC =====
 function updateMusicUI() {
     const musicBtn = document.getElementById("musicToggleBtn");
     const volumeBtn = document.getElementById("musicVolumeBtn");
-    
     if (isMusicPlaying) {
         musicBtn.innerHTML = "🔊 Tắt nhạc";
         musicBtn.className = "music-btn on";
@@ -371,11 +341,9 @@ function updateMusicUI() {
         musicBtn.innerHTML = "🔇 Bật nhạc";
         musicBtn.className = "music-btn off";
     }
-    
     volumeBtn.innerHTML = `🔊 Volume: ${Math.round(currentVolume * 100)}%`;
 }
 
-// ===== BẬT/TẮT NHẠC =====
 function toggleMusic() {
     if (isMusicPlaying) {
         bgMusic.pause();
@@ -387,8 +355,7 @@ function toggleMusic() {
                 isMusicPlaying = true;
                 updateMusicUI();
             }).catch(error => {
-                console.log("Không thể phát nhạc:", error);
-                alert("Không thể phát nhạc. Vui lòng kiểm tra file nhạc hoặc thử lại sau.");
+                alert("Không thể phát nhạc. Vui lòng kiểm tra file nhạc.");
             });
             return;
         }
@@ -396,9 +363,7 @@ function toggleMusic() {
     updateMusicUI();
 }
 
-// ===== ĐIỀU CHỈNH ÂM LƯỢNG =====
 function adjustVolume() {
-    // Tăng âm lượng theo vòng tròn: 25% -> 50% -> 75% -> 100% -> 0% -> 25%
     if (currentVolume === 0.25) {
         currentVolume = 0.5;
     } else if (currentVolume === 0.5) {
@@ -410,74 +375,52 @@ function adjustVolume() {
     } else {
         currentVolume = 0.25;
     }
-    
     bgMusic.volume = currentVolume;
-    
-    // Nếu đang ở volume 0 và nhạc đang phát, tạm dừng
     if (currentVolume === 0 && isMusicPlaying) {
         bgMusic.pause();
         isMusicPlaying = false;
     }
-    
-    // Nếu volume > 0 và nhạc đang tắt, tự động bật nhạc
     if (currentVolume > 0 && !isMusicPlaying) {
-        bgMusic.play()
-            .then(() => {
-                isMusicPlaying = true;
-            })
-            .catch(e => console.log("Không thể phát nhạc"));
+        bgMusic.play().then(() => {
+            isMusicPlaying = true;
+        }).catch(e => {});
     }
-    
     updateMusicUI();
 }
 
-// ===== BẬT NHẠC KHI BẮT ĐẦU GAME (CÓ THỂ BỊ CHẶN) =====
 function playBackgroundMusic() {
-    // Thử phát nhạc nền
     if (!isMusicPlaying) {
         let playPromise = bgMusic.play();
-        
         if (playPromise !== undefined) {
             playPromise.then(() => {
                 isMusicPlaying = true;
                 updateMusicUI();
-                console.log("Nhạc nền đang phát");
-            }).catch(error => {
-                console.log("Không thể phát nhạc nền tự động:", error);
-                // Đã có nút bật nhạc thủ công, không cần thông báo thêm
-            });
+            }).catch(error => {});
         }
     }
 }
 
-// ===== ÂM THANH CLICK =====
 function playClickSound() {
     try {
         const clickSound = document.getElementById("clickSound");
         if (clickSound) {
             clickSound.currentTime = 0;
             clickSound.volume = 0.3;
-            
             let playPromise = clickSound.play();
             if (playPromise !== undefined) {
-                playPromise.catch(e => {
-                    console.log("Không thể play click.mp3");
-                });
+                playPromise.catch(e => {});
             }
         }
-    } catch(e) {
-        console.log("Lỗi phát âm thanh click:", e);
-    }
+    } catch(e) {}
 }
 
-// ===== CÁC ÂM THANH KHÁC =====
 function playCorrectSound() {
     try {
         const sound = document.getElementById("correctSound");
         if (sound) {
             sound.currentTime = 0;
             sound.volume = 0.4;
-            sound.play().catch(e => console.log("Không thể phát âm thanh"));
+            sound.play().catch(e => {});
         }
     } catch(e) {}
 }
@@ -488,7 +431,7 @@ function playWrongSound() {
         if (sound) {
             sound.currentTime = 0;
             sound.volume = 0.4;
-            sound.play().catch(e => console.log("Không thể phát âm thanh"));
+            sound.play().catch(e => {});
         }
     } catch(e) {}
 }
@@ -499,64 +442,49 @@ function playSummarySound() {
         if (sound) {
             sound.currentTime = 0;
             sound.volume = 0.3;
-            sound.play().catch(e => console.log("Không thể phát summary.mp3"));
+            sound.play().catch(e => {});
         }
     } catch(e) {}
 }
 
-// ===== BẮT ĐẦU TRÒ CHƠI =====
 function startGame(){
     playClickSound();
     playBackgroundMusic();
-
     document.getElementById("intro").classList.add("hidden");
     document.getElementById("game").classList.remove("hidden");
     showQuestion();
 }
 
-// ===== CÂU HỎI =====
 const questions = [
 {question:"Ai là tác giả của 'Lão Hạc'?",
 answers:["Nam Cao","Tô Hoài","Kim Lân","Nguyễn Du"],
 correct:0},
-
 {question:"Tác phẩm 'Vợ nhặt' của ai?",
 answers:["Kim Lân","Nam Cao","Tô Hoài","Ngô Tất Tố"],
 correct:0},
-
 {question:"Thúy Kiều thuộc tác phẩm nào?",
 answers:["Tắt đèn","Truyện Kiều","Làng","Vợ nhặt"],
 correct:1},
-
 {question:"'Chiếc lược ngà' nói về tình cảm gì?",
 answers:["Tình bạn","Tình cha con","Tình yêu","Tình thầy trò"],
 correct:1},
-
 {question:"Tác giả bài 'Đồng chí'?",
 answers:["Xuân Diệu","Hữu Thỉnh","Tố Hữu","Chính Hữu"],
 correct:3},
-
 {question:"'Ông lão đánh cá và con cá vàng' là truyện của nước nào?",
 answers:["Ý","Anh","Nga","Đức"],
 correct:2},
-
 {question:"Bài thơ 'Sang thu' của ai?",
 answers:["Hữu Thỉnh","Tố Hữu","Xuân Diệu","Chính Hữu"],
 correct:0},
-
 {question:"Nhân vật chị Dậu thuộc tác phẩm nào?",
 answers:["Lão Hạc","Làng","Vợ nhặt","Tắt đèn"],
 correct:3},
-
 {question:"Tác giả 'Truyện Kiều' là ai?",
 answers:["Nguyễn Du","Hồ Xuân Hương","Xuân Diệu","Nguyễn Đình Chiểu"],
 correct:0},
-
 {question:"Giá trị hiện thực của văn học là gì?",
-answers:["Tạo ra thế giới tưởng tượng",
-         "Chỉ nói về tình yêu",
-         "Phản ánh đời sống xã hội",
-         "Chỉ miêu tả thiên nhiên"],
+answers:["Tạo ra thế giới tưởng tượng","Chỉ nói về tình yêu","Phản ánh đời sống xã hội","Chỉ miêu tả thiên nhiên"],
 correct:2}
 ];
 
@@ -571,33 +499,25 @@ let userAnswers = [];
 function showQuestion(){
 locked=false;
 let q=questions[current];
-
 document.getElementById("question").innerText=q.question;
 document.getElementById("questionCounter").innerText = `Câu ${current+1}/${questions.length}`;
-
 document.getElementById("answers").innerHTML="";
 document.getElementById("streak").innerText="🔥 "+streak;
-
 let colors=["red","blue","yellow","green"];
-
 q.answers.forEach((ans,index)=>{
 let btn=document.createElement("button");
 btn.classList.add(colors[index]);
 btn.innerText=ans;
-
 btn.addEventListener('click', function() {
     playClickSound();
     checkAnswer(index);
 });
-
 btn.addEventListener('touchstart', function() {
     playClickSound();
     checkAnswer(index);
 });
-
 document.getElementById("answers").appendChild(btn);
 });
-
 startTimer();
 }
 
@@ -605,24 +525,18 @@ function startTimer(){
     if(timer){
         clearInterval(timer);
     }
-
     const timerDisplay = document.getElementById("timer");
     timerDisplay.classList.remove("redBlink");
-
     let timeLeft = 10;
     timerDisplay.innerText = "⏱ " + timeLeft + " giây";
-
     timer = setInterval(()=>{
         timeLeft--;
-
         if(timeLeft >= 0){
             timerDisplay.innerText = "⏱ " + timeLeft + " giây";
         }
-
         if(timeLeft <= 3 && timeLeft > 0){
             timerDisplay.classList.add("redBlink");
         }
-
         if(timeLeft <= 0){
             clearInterval(timer);
             checkAnswer(-1);
@@ -633,19 +547,14 @@ function startTimer(){
 function checkAnswer(index){
     if(locked) return;
     locked = true;
-
     if(timer){
         clearInterval(timer);
     }
-    
     userAnswers[current] = index;
-
     let correctIndex = questions[current].correct;
     let correctText = questions[current].answers[correctIndex];
-
     let message = "";
     let bgColor = "";
-
     if(index === -1){
         message = "⌛ Hết giờ! Đáp án là: " + correctText;
         bgColor = "rgba(255, 193, 7, 0.95)";
@@ -655,11 +564,9 @@ function checkAnswer(index){
     else if(index === correctIndex){
         score++;
         streak++;
-
         if(streak > maxStreak){
             maxStreak = streak;
         }
-
         message = "✅ Chính xác!";
         bgColor = "rgba(82, 183, 136, 0.95)";
         playCorrectSound();
@@ -669,26 +576,20 @@ function checkAnswer(index){
         bgColor = "rgba(255, 77, 109, 0.95)";
         streak = 0;
         playWrongSound();
-        
         document.querySelector('.container').classList.add('shake');
         setTimeout(() => {
             document.querySelector('.container').classList.remove('shake');
         }, 500);
     }
-
     document.getElementById("streak").innerText = "🔥 " + streak;
-
     let zoom = document.createElement("div");
     zoom.id = "zoomBox";
     zoom.style.background = bgColor;
     zoom.innerHTML = message;
     document.body.appendChild(zoom);
-
     current++;
-
     setTimeout(()=>{
         document.body.removeChild(zoom);
-
         if(current < questions.length){
             showQuestion();
         }else{
@@ -700,13 +601,11 @@ function checkAnswer(index){
 function showSummary(){
     document.getElementById("game").classList.add("hidden");
     playSummarySound();
-
     let rating = "";
     if(score >= 9) rating = "🌟 Xuất sắc!";
     else if(score >= 7) rating = "👏 Rất tốt!";
     else if(score >= 5) rating = "👍 Khá!";
     else rating = "💪 Cần cố gắng!";
-
     let summaryBox = document.createElement("div");
     summaryBox.id = "summaryBox";
     summaryBox.style.overflowY = "auto";
@@ -719,24 +618,18 @@ function showSummary(){
     summaryBox.style.left = "0";
     summaryBox.style.width = "100%";
     summaryBox.style.height = "100%";
-    
     summaryBox.style.backgroundImage = "url('hinhnen.jpg')";
     summaryBox.style.backgroundSize = "cover";
     summaryBox.style.backgroundPosition = "center";
     summaryBox.style.backgroundRepeat = "no-repeat";
     summaryBox.style.backgroundAttachment = "fixed";
-
     let answerList = "";
-
     questions.forEach((q, index)=>{
         let correctIndex = q.correct;
         let userIndex = userAnswers[index];
-
         let correctText = q.answers[correctIndex];
         let userText = (userIndex !== undefined && userIndex >= 0) ? q.answers[userIndex] : "Không trả lời";
-
         let userClass = (userIndex === correctIndex) ? "summary-correct" : "summary-wrong";
-
         answerList += `
             <div style="margin:15px 0;text-align:left;">
                 <b>Câu ${index+1}:</b> ${q.question}<br>
@@ -750,7 +643,6 @@ function showSummary(){
             <hr style="border-color:rgba(255,255,255,0.2);">
         `;
     });
-
     summaryBox.innerHTML = `
 <div id="summaryContent">
     <h1 style="font-size:32px;">🎉 TỔNG KẾT 🎉</h1>
@@ -766,7 +658,6 @@ function showSummary(){
     </div>
 </div>
 `;
-
     document.body.appendChild(summaryBox);
 }
 
@@ -777,12 +668,9 @@ function replayGame() {
     }, 100);
 }
 
-// Khởi tạo giao diện nút nhạc khi load trang
 window.addEventListener('load', function() {
     updateMusicUI();
-    console.log("Trang đã load xong! Dùng nút ở góc phải để bật nhạc.");
 });
 </script>
-
 </body>
 </html>
