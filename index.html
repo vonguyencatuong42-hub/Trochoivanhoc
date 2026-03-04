@@ -277,19 +277,27 @@ button:active {
 </div>
 
 <!-- ÂM THANH -->
-<audio id="bgmusic" src="nhacnen.mp3" loop></audio>
+
+<audio id="bgmusic" src="nhacnen.mp3" loop autoplay muted></audio>
+
+<audio id="correctSound" preload="auto" src="votay.mp3"></audio>
+<audio id="wrongSound" preload="auto" src="tete.mp3"></audio>
+<audio id="clickSound" preload="auto" src="click.mp3"></audio>
+<audio id="summarySound" preload="auto" src="summary.mp3"></audio>
 
 <script>
-document.addEventListener("click", function () {
+window.addEventListener("load", function () {
     const music = document.getElementById("bgmusic");
-    music.play();
-}, { once: true });
-</script>
-<audio id="correctSound" preload="auto"><source src="votay.mp3"></audio>
-<audio id="wrongSound" preload="auto"><source src="tete.mp3"></audio>
-<audio id="clickSound" preload="auto"><source src="click.mp3"></audio>
-<audio id="summarySound" preload="auto"><source src="summary.mp3"></audio>
 
+    // Khi người dùng click lần đầu -> bỏ mute và phát nhạc
+    document.body.addEventListener("click", function () {
+        music.muted = false;
+        music.play().catch(function(e){
+            console.log("Autoplay bị chặn:", e);
+        });
+    }, { once: true });
+});
+</script>
 <script>
 // Set hình nền từ file hinhnen.jpg
 document.body.style.backgroundImage = "url('hinhnen.jpg')";
@@ -622,3 +630,4 @@ function replayGame() {
 </body>
 
 </html>
+
