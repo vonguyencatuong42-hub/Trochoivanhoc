@@ -278,7 +278,7 @@ button:active {
 
 <!-- ÂM THANH -->
 
-<audio id="bgmusic" src="nhacnen.mp3" loop autoplay muted></audio>
+<audio id="bgmusic" src="nhacnen.mp3" loop></audio>
 
 <audio id="correctSound" preload="auto" src="votay.mp3"></audio>
 <audio id="wrongSound" preload="auto" src="tete.mp3"></audio>
@@ -286,59 +286,30 @@ button:active {
 <audio id="summarySound" preload="auto" src="summary.mp3"></audio>
 
 <script>
-window.addEventListener("load", function () {
-    const music = document.getElementById("bgmusic");
-
-    // Khi người dùng click lần đầu -> bỏ mute và phát nhạc
-    document.body.addEventListener("click", function () {
-        music.muted = false;
-        music.play().catch(function(e){
-            console.log("Autoplay bị chặn:", e);
-        });
-    }, { once: true });
-});
-</script>
-<script>
-// Set hình nền từ file hinhnen.jpg
+// ===== HÌNH NỀN =====
 document.body.style.backgroundImage = "url('hinhnen.jpg')";
 document.body.style.backgroundSize = "cover";
 document.body.style.backgroundPosition = "center";
 document.body.style.backgroundRepeat = "no-repeat";
 document.body.style.backgroundAttachment = "fixed";
 
-// Hàm phát nhạc nền với volume 25%
-function playBackgroundMusic() {
-    const bgMusic = document.getElementById("bgmusic");
-    bgMusic.volume = 0.25; // 25% âm lượng
-    
-    // Thử phát nhạc
-    bgMusic.play().then(() => {
-        console.log("Nhạc nền đã phát với volume 25%");
-    }).catch(error => {
-        console.log("Không thể phát nhạc tự động:", error);
-    });
-}
+// ===== NHẠC NỀN =====
+const bgMusic = document.getElementById("bgmusic");
+bgMusic.volume = 0.25;
 
-// Phát nhạc nền ngay khi trang load
-window.addEventListener('load', function() {
-    playBackgroundMusic();
-});
-
-// Thêm sự kiện click toàn trang để phát nhạc nếu chưa phát
-document.addEventListener('click', function() {
-    const bgMusic = document.getElementById("bgmusic");
+// Khi người dùng click lần đầu -> phát nhạc
+document.addEventListener("click", function () {
     if (bgMusic.paused) {
-        bgMusic.volume = 0.25;
-        bgMusic.play().catch(e => console.log("Vẫn không phát được"));
+        bgMusic.play().catch(e => console.log("Không phát được:", e));
     }
 }, { once: true });
 
-// Hàm phát âm thanh click
+// ===== ÂM THANH CLICK =====
 function playClickSound() {
     const clickSound = document.getElementById("clickSound");
     if (clickSound) {
         clickSound.currentTime = 0;
-        clickSound.play().catch(e => console.log("Không thể phát âm thanh click.mp3"));
+        clickSound.play().catch(e => console.log("Không thể phát click.mp3"));
     }
 }
 
@@ -630,4 +601,5 @@ function replayGame() {
 </body>
 
 </html>
+
 
