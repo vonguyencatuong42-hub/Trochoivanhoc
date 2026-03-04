@@ -3,12 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <title>Trò Chơi Văn Học</title>
-
 <style>
 body{
     margin:0;
     font-family:"Times New Roman", serif;
-    /* Đặt tên file ảnh nền là hinhnen.jpg */
     background: url('hinhnen.jpg') no-repeat center center fixed;
     background-size: cover;
     display:flex;
@@ -20,7 +18,6 @@ body{
     position: relative;
 }
 
-/* Overlay giống như khúc đầu - màu tối để chữ dễ đọc */
 body::before {
     content: '';
     position: absolute;
@@ -125,7 +122,6 @@ button{
     text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
-/* Thêm hiệu ứng khi hover vào button */
 button:hover {
     transform: scale(1.05);
     box-shadow: 0 5px 15px rgba(0,0,0,0.5);
@@ -133,7 +129,6 @@ button:hover {
     border: 1px solid white;
 }
 
-/* Thêm hiệu ứng khi active (nhấn vào) */
 button:active {
     transform: scale(0.95);
 }
@@ -183,7 +178,6 @@ button:active {
     left:0;
     width:100%;
     height:100%;
-    /* Dùng ảnh nền hinhnen.jpg giống khúc đầu - KHÔNG có overlay */
     background: url('hinhnen.jpg') no-repeat center center fixed;
     background-size: cover;
     display:flex;
@@ -196,12 +190,10 @@ button:active {
     z-index:1000;
 }
 
-/* ĐÃ XÓA overlay toàn màn hình */
-
 #summaryContent{
     max-width:800px;
     width:100%;
-    background: rgba(0, 0, 0, 0.7); /* Màu đen mờ cho ô đáp án */
+    background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(5px);
     padding:30px;
     border-radius:20px;
@@ -213,7 +205,6 @@ button:active {
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-/* Style cho phần tổng kết */
 .summary-correct {
     color: #4CAF50 !important;
     font-weight: bold;
@@ -229,7 +220,6 @@ button:active {
     font-weight: bold;
 }
 
-/* Style cho nút chơi lại */
 .replay-button {
     padding:15px 40px;
     font-size:18px;
@@ -253,17 +243,13 @@ button:active {
 }
 </style>
 </head>
-
 <body>
-
 <div class="container">
-
 <div id="intro">
     <h1>📚 Trò Chơi Văn Học 📚</h1>
     <p>Bạn đã sẵn sàng chưa?</p>
     <button class="green" onclick="startGame()" style="background: #52b788;" id="startButton">Sẵn sàng</button>
 </div>
-
 <div id="game" class="hidden">
     <div class="header">
         <h2 id="question"></h2>
@@ -273,27 +259,34 @@ button:active {
     <div id="timer"></div>
     <div class="grid" id="answers"></div>
 </div>
-
 </div>
 
-<!-- ÂM THANH -->
-<audio id="bgmusic" src="Nom - Childhood Dreams.mp3" autoplay loop></audio>
-
+<!-- ÂM THANH - KHÔNG có autoplay, chỉ preload -->
+<audio id="bgmusic" loop preload="auto">
+    <source src="Nom - Childhood Dreams.mp3" type="audio/mpeg">
+</audio>
 <audio id="correctSound" preload="auto" src="votay.mp3"></audio>
 <audio id="wrongSound" preload="auto" src="tete.mp3"></audio>
 <audio id="clickSound" preload="auto" src="click.mp3"></audio>
 <audio id="summarySound" preload="auto" src="summary.mp3"></audio>
 
 <script>
-// ===== HÌNH NỀN =====
-document.body.style.backgroundImage = "url('hinhnen.jpg')";
-
 // ===== NHẠC NỀN =====
 const bgMusic = document.getElementById("bgmusic");
-bgMusic.volume = 0.25;
+if(bgMusic) {
+    bgMusic.volume = 0.25;
+    console.log("Đã tìm thấy nhạc nền");
+}
 
 function playBackgroundMusic() {
-    bgMusic.play().catch(e => console.log("Nhạc chưa play được:", e));
+    if(bgMusic) {
+        console.log("Đang phát nhạc nền...");
+        bgMusic.play()
+            .then(() => console.log("Nhạc nền đang phát"))
+            .catch(e => console.log("Không thể phát nhạc nền:", e));
+    } else {
+        console.log("Không tìm thấy nhạc nền");
+    }
 }
 
 // ===== ÂM THANH CLICK =====
@@ -305,10 +298,11 @@ function playClickSound() {
     }
 }
 
-// GẮN VỚI startGame
+// ===== BẮT ĐẦU TRÒ CHƠI =====
 function startGame(){
-    playClickSound();      // click sound
-    playBackgroundMusic(); // bật nhạc nền
+    console.log("Bắt đầu game");
+    playClickSound();
+    playBackgroundMusic(); // Phát nhạc nền khi bấm nút
 
     document.getElementById("intro").classList.add("hidden");
     document.getElementById("game").classList.remove("hidden");
@@ -319,44 +313,32 @@ const questions = [
 {question:"Ai là tác giả của 'Lão Hạc'?",
 answers:["Nam Cao","Tô Hoài","Kim Lân","Nguyễn Du"],
 correct:0},
-
 {question:"Tác phẩm 'Vợ nhặt' của ai?",
 answers:["Kim Lân","Nam Cao","Tô Hoài","Ngô Tất Tố"],
 correct:0},
-
 {question:"Thúy Kiều thuộc tác phẩm nào?",
 answers:["Tắt đèn","Truyện Kiều","Làng","Vợ nhặt"],
 correct:1},
-
 {question:"'Chiếc lược ngà' nói về tình cảm gì?",
 answers:["Tình bạn","Tình cha con","Tình yêu","Tình thầy trò"],
 correct:1},
-
 {question:"Tác giả bài 'Đồng chí'?",
 answers:["Xuân Diệu","Hữu Thỉnh","Tố Hữu","Chính Hữu"],
 correct:3},
-
 {question:"'Ông lão đánh cá và con cá vàng' là truyện của nước nào?",
 answers:["Ý","Anh","Nga","Đức"],
 correct:2},
-
 {question:"Bài thơ 'Sang thu' của ai?",
 answers:["Hữu Thỉnh","Tố Hữu","Xuân Diệu","Chính Hữu"],
 correct:0},
-
 {question:"Nhân vật chị Dậu thuộc tác phẩm nào?",
 answers:["Lão Hạc","Làng","Vợ nhặt","Tắt đèn"],
 correct:3},
-
 {question:"Tác giả 'Truyện Kiều' là ai?",
 answers:["Nguyễn Du","Hồ Xuân Hương","Xuân Diệu","Nguyễn Đình Chiểu"],
 correct:0},
-
 {question:"Giá trị hiện thực của văn học là gì?",
-answers:["Tạo ra thế giới tưởng tượng",
-         "Chỉ nói về tình yêu",
-         "Phản ánh đời sống xã hội",
-         "Chỉ miêu tả thiên nhiên"],
+answers:["Tạo ra thế giới tưởng tượng","Chỉ nói về tình yêu","Phản ánh đời sống xã hội","Chỉ miêu tả thiên nhiên"],
 correct:2}
 ];
 
@@ -364,51 +346,33 @@ let current=0;
 let score=0;
 let streak=0;
 let timer;
-let timeLeft=10;
 let locked=false;
 let maxStreak = 0;
 let userAnswers = [];
 
-function startGame(){
-    playClickSound(); // Phát âm thanh click khi bấm nút sẵn sàng
-    
-    document.getElementById("intro").classList.add("hidden");
-    document.getElementById("game").classList.remove("hidden");
-    showQuestion();
-}
-
 function showQuestion(){
-locked=false;
-let q=questions[current];
+    locked=false;
+    let q=questions[current];
 
-document.getElementById("question").innerText=q.question;
-document.getElementById("questionCounter").innerText = `Câu ${current+1}/${questions.length}`;
+    document.getElementById("question").innerText=q.question;
+    document.getElementById("questionCounter").innerText = `Câu ${current+1}/${questions.length}`;
+    document.getElementById("answers").innerHTML="";
+    document.getElementById("streak").innerText="🔥 "+streak;
 
-document.getElementById("answers").innerHTML="";
-document.getElementById("streak").innerText="🔥 "+streak;
+    let colors=["red","blue","yellow","green"];
 
-let colors=["red","blue","yellow","green"];
+    q.answers.forEach((ans,index)=>{
+        let btn=document.createElement("button");
+        btn.classList.add(colors[index]);
+        btn.innerText=ans;
+        btn.onclick = function() {
+            playClickSound();
+            checkAnswer(index);
+        };
+        document.getElementById("answers").appendChild(btn);
+    });
 
-q.answers.forEach((ans,index)=>{
-let btn=document.createElement("button");
-btn.classList.add(colors[index]);
-btn.innerText=ans;
-
-// Thêm sound click khi bấm vào lựa chọn
-btn.addEventListener('click', function() {
-    playClickSound(); // Phát âm thanh click
-    checkAnswer(index);
-});
-
-btn.addEventListener('touchstart', function() {
-    playClickSound(); // Phát âm thanh click trên mobile
-    checkAnswer(index);
-});
-
-document.getElementById("answers").appendChild(btn);
-});
-
-startTimer();
+    startTimer();
 }
 
 function startTimer(){
@@ -424,15 +388,12 @@ function startTimer(){
 
     timer = setInterval(()=>{
         timeLeft--;
-
         if(timeLeft >= 0){
             timerDisplay.innerText = "⏱ " + timeLeft + " giây";
         }
-
         if(timeLeft <= 3 && timeLeft > 0){
             timerDisplay.classList.add("redBlink");
         }
-
         if(timeLeft <= 0){
             clearInterval(timer);
             checkAnswer(-1);
@@ -460,27 +421,23 @@ function checkAnswer(index){
         message = "⌛ Hết giờ! Đáp án là: " + correctText;
         bgColor = "rgba(255, 193, 7, 0.95)";
         streak = 0;
-        
-        // Phát âm thanh tete.mp3 khi hết giờ
-        document.getElementById("wrongSound").play();
+        document.getElementById("wrongSound").play().catch(e=>{});
     }
     else if(index === correctIndex){
         score++;
         streak++;
-
         if(streak > maxStreak){
             maxStreak = streak;
         }
-
         message = "✅ Chính xác!";
         bgColor = "rgba(82, 183, 136, 0.95)";
-        document.getElementById("correctSound").play();
+        document.getElementById("correctSound").play().catch(e=>{});
     }
     else{
         message = "❌ Sai rồi! Đáp án đúng là: " + correctText;
         bgColor = "rgba(255, 77, 109, 0.95)";
         streak = 0;
-        document.getElementById("wrongSound").play();
+        document.getElementById("wrongSound").play().catch(e=>{});
         
         document.querySelector('.container').classList.add('shake');
         setTimeout(() => {
@@ -500,7 +457,6 @@ function checkAnswer(index){
 
     setTimeout(()=>{
         document.body.removeChild(zoom);
-
         if(current < questions.length){
             showQuestion();
         }else{
@@ -512,7 +468,6 @@ function checkAnswer(index){
 function showSummary(){
     document.getElementById("game").classList.add("hidden");
 
-    // Phát âm thanh khi phần tổng kết xuất hiện
     const summarySound = document.getElementById("summarySound");
     if (summarySound) {
         summarySound.currentTime = 0;
@@ -537,8 +492,6 @@ function showSummary(){
     summaryBox.style.left = "0";
     summaryBox.style.width = "100%";
     summaryBox.style.height = "100%";
-    
-    // Set ảnh nền cho summaryBox
     summaryBox.style.backgroundImage = "url('hinhnen.jpg')";
     summaryBox.style.backgroundSize = "cover";
     summaryBox.style.backgroundPosition = "center";
@@ -550,10 +503,8 @@ function showSummary(){
     questions.forEach((q, index)=>{
         let correctIndex = q.correct;
         let userIndex = userAnswers[index];
-
         let correctText = q.answers[correctIndex];
         let userText = (userIndex !== undefined && userIndex >= 0) ? q.answers[userIndex] : "Không trả lời";
-
         let userClass = (userIndex === correctIndex) ? "summary-correct" : "summary-wrong";
 
         answerList += `
@@ -589,19 +540,18 @@ function showSummary(){
     document.body.appendChild(summaryBox);
 }
 
-// Hàm chơi lại với âm thanh click
 function replayGame() {
-    playClickSound(); // Phát âm thanh click khi bấm nút chơi lại
-    
-    // Reload trang sau một chút để âm thanh được phát
+    playClickSound();
     setTimeout(() => {
         location.reload();
     }, 100);
 }
+
+// Kiểm tra khi trang load
+window.addEventListener('load', function() {
+    console.log("Trang đã load xong");
+    console.log("File nhạc nền:", bgMusic ? bgMusic.src : "Không tìm thấy");
+});
 </script>
-
 </body>
-
 </html>
-
-
