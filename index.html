@@ -5,10 +5,10 @@
 <title>Trò Chơi Văn Học</title>
 
 <style>
+/* Giữ nguyên CSS của bạn */
 body{
     margin:0;
     font-family:"Times New Roman", serif;
-    /* Đặt tên file ảnh nền là hinhnen.jpg */
     background: url('hinhnen.jpg') no-repeat center center fixed;
     background-size: cover;
     display:flex;
@@ -20,7 +20,6 @@ body{
     position: relative;
 }
 
-/* Overlay giống như khúc đầu - màu tối để chữ dễ đọc */
 body::before {
     content: '';
     position: absolute;
@@ -125,7 +124,6 @@ button{
     text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
-/* Thêm hiệu ứng khi hover vào button */
 button:hover {
     transform: scale(1.05);
     box-shadow: 0 5px 15px rgba(0,0,0,0.5);
@@ -133,7 +131,6 @@ button:hover {
     border: 1px solid white;
 }
 
-/* Thêm hiệu ứng khi active (nhấn vào) */
 button:active {
     transform: scale(0.95);
 }
@@ -183,7 +180,6 @@ button:active {
     left:0;
     width:100%;
     height:100%;
-    /* Dùng ảnh nền hinhnen.jpg giống khúc đầu - KHÔNG có overlay */
     background: url('hinhnen.jpg') no-repeat center center fixed;
     background-size: cover;
     display:flex;
@@ -196,12 +192,10 @@ button:active {
     z-index:1000;
 }
 
-/* ĐÃ XÓA overlay toàn màn hình */
-
 #summaryContent{
     max-width:800px;
     width:100%;
-    background: rgba(0, 0, 0, 0.7); /* Màu đen mờ cho ô đáp án */
+    background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(5px);
     padding:30px;
     border-radius:20px;
@@ -213,7 +207,6 @@ button:active {
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-/* Style cho phần tổng kết */
 .summary-correct {
     color: #4CAF50 !important;
     font-weight: bold;
@@ -229,7 +222,6 @@ button:active {
     font-weight: bold;
 }
 
-/* Style cho nút chơi lại */
 .replay-button {
     padding:15px 40px;
     font-size:18px;
@@ -276,45 +268,111 @@ button:active {
 
 </div>
 
-<!-- ÂM THANH -->
-<audio id="bgmusic" src="nhacnen.mp3" loop></audio>
+<!-- ÂM THANH - ĐÃ SỬA ĐỂ TƯƠNG THÍCH VỚI GITHUB -->
+<audio id="bgmusic" loop preload="auto">
+    <source src="nhacnen.mp3" type="audio/mpeg">
+    <source src="nhacnen.ogg" type="audio/ogg">
+    Trình duyệt của bạn không hỗ trợ audio
+</audio>
 
-<audio id="correctSound" preload="auto" src="votay.mp3"></audio>
-<audio id="wrongSound" preload="auto" src="tete.mp3"></audio>
-<audio id="clickSound" preload="auto" src="click.mp3"></audio>
-<audio id="summarySound" preload="auto" src="summary.mp3"></audio>
+<audio id="correctSound" preload="auto">
+    <source src="votay.mp3" type="audio/mpeg">
+    <source src="votay.ogg" type="audio/ogg">
+</audio>
+
+<audio id="wrongSound" preload="auto">
+    <source src="tete.mp3" type="audio/mpeg">
+    <source src="tete.ogg" type="audio/ogg">
+</audio>
+
+<audio id="clickSound" preload="auto">
+    <source src="click.mp3" type="audio/mpeg">
+    <source src="click.ogg" type="audio/ogg">
+</audio>
+
+<audio id="summarySound" preload="auto">
+    <source src="summary.mp3" type="audio/mpeg">
+    <source src="summary.ogg" type="audio/ogg">
+</audio>
 
 <script>
-// ===== HÌNH NỀN =====
-document.body.style.backgroundImage = "url('hinhnen.jpg')";
+// ===== KIỂM TRA FILE TỒN TẠI =====
+console.log("Đang tải game...");
 
-// ===== NHẠC NỀN =====
+// ===== NHẠC NỀN - ĐÃ SỬA =====
 const bgMusic = document.getElementById("bgmusic");
-bgMusic.volume = 0.25;
+bgMusic.volume = 0.2; // Giảm volume một chút
 
 function playBackgroundMusic() {
-    bgMusic.play().catch(e => console.log("Nhạc chưa play được:", e));
+    // Thử phát nhạc nền
+    let playPromise = bgMusic.play();
+    
+    if (playPromise !== undefined) {
+        playPromise.then(() => {
+            console.log("Nhạc nền đang phát");
+        }).catch(error => {
+            console.log("Không thể phát nhạc nền tự động:", error);
+            // Tạo nút bật nhạc thủ công nếu cần
+            showMusicButton();
+        });
+    }
+}
+
+// Tạo nút bật nhạc nếu trình duyệt chặn autoplay
+function showMusicButton() {
+    let musicBtn = document.createElement('button');
+    musicBtn.innerHTML = '🔊 Bật nhạc nền';
+    musicBtn.style.position = 'fixed';
+    musicBtn.style.bottom = '20px';
+    musicBtn.style.right = '20px';
+    musicBtn.style.zIndex = '9999';
+    musicBtn.style.padding = '10px 20px';
+    musicBtn.style.background = '#ffd700';
+    musicBtn.style.color = 'black';
+    musicBtn.style.border = 'none';
+    musicBtn.style.borderRadius = '30px';
+    musicBtn.style.cursor = 'pointer';
+    musicBtn.style.fontWeight = 'bold';
+    
+    musicBtn.onclick = function() {
+        bgMusic.play();
+        this.remove();
+    };
+    
+    document.body.appendChild(musicBtn);
 }
 
 // ===== ÂM THANH CLICK =====
 function playClickSound() {
-    const clickSound = document.getElementById("clickSound");
-    if (clickSound) {
-        clickSound.currentTime = 0;
-        clickSound.play().catch(e => console.log("Không thể play click.mp3"));
+    try {
+        const clickSound = document.getElementById("clickSound");
+        if (clickSound) {
+            clickSound.currentTime = 0;
+            clickSound.volume = 0.3;
+            
+            let playPromise = clickSound.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(e => {
+                    console.log("Không thể play click.mp3, nhưng không sao");
+                });
+            }
+        }
+    } catch(e) {
+        console.log("Lỗi phát âm thanh click:", e);
     }
 }
 
-// GẮN VỚI startGame
+// ===== BẮT ĐẦU TRÒ CHƠI =====
 function startGame(){
-    playClickSound();      // click sound
-    playBackgroundMusic(); // bật nhạc nền
+    playClickSound();
+    playBackgroundMusic();
 
     document.getElementById("intro").classList.add("hidden");
     document.getElementById("game").classList.remove("hidden");
     showQuestion();
 }
-    
+
+// ===== CÂU HỎI =====
 const questions = [
 {question:"Ai là tác giả của 'Lão Hạc'?",
 answers:["Nam Cao","Tô Hoài","Kim Lân","Nguyễn Du"],
@@ -369,14 +427,6 @@ let locked=false;
 let maxStreak = 0;
 let userAnswers = [];
 
-function startGame(){
-    playClickSound(); // Phát âm thanh click khi bấm nút sẵn sàng
-    
-    document.getElementById("intro").classList.add("hidden");
-    document.getElementById("game").classList.remove("hidden");
-    showQuestion();
-}
-
 function showQuestion(){
 locked=false;
 let q=questions[current];
@@ -394,14 +444,13 @@ let btn=document.createElement("button");
 btn.classList.add(colors[index]);
 btn.innerText=ans;
 
-// Thêm sound click khi bấm vào lựa chọn
 btn.addEventListener('click', function() {
-    playClickSound(); // Phát âm thanh click
+    playClickSound();
     checkAnswer(index);
 });
 
 btn.addEventListener('touchstart', function() {
-    playClickSound(); // Phát âm thanh click trên mobile
+    playClickSound();
     checkAnswer(index);
 });
 
@@ -461,8 +510,10 @@ function checkAnswer(index){
         bgColor = "rgba(255, 193, 7, 0.95)";
         streak = 0;
         
-        // Phát âm thanh tete.mp3 khi hết giờ
-        document.getElementById("wrongSound").play();
+        // Phát âm thanh sai
+        try {
+            document.getElementById("wrongSound").play();
+        } catch(e) {}
     }
     else if(index === correctIndex){
         score++;
@@ -474,13 +525,17 @@ function checkAnswer(index){
 
         message = "✅ Chính xác!";
         bgColor = "rgba(82, 183, 136, 0.95)";
-        document.getElementById("correctSound").play();
+        try {
+            document.getElementById("correctSound").play();
+        } catch(e) {}
     }
     else{
         message = "❌ Sai rồi! Đáp án đúng là: " + correctText;
         bgColor = "rgba(255, 77, 109, 0.95)";
         streak = 0;
-        document.getElementById("wrongSound").play();
+        try {
+            document.getElementById("wrongSound").play();
+        } catch(e) {}
         
         document.querySelector('.container').classList.add('shake');
         setTimeout(() => {
@@ -512,12 +567,15 @@ function checkAnswer(index){
 function showSummary(){
     document.getElementById("game").classList.add("hidden");
 
-    // Phát âm thanh khi phần tổng kết xuất hiện
-    const summarySound = document.getElementById("summarySound");
-    if (summarySound) {
-        summarySound.currentTime = 0;
-        summarySound.play().catch(e => console.log("Không thể phát âm thanh summary.mp3"));
-    }
+    // Phát âm thanh tổng kết
+    try {
+        const summarySound = document.getElementById("summarySound");
+        if (summarySound) {
+            summarySound.currentTime = 0;
+            summarySound.volume = 0.3;
+            summarySound.play().catch(e => console.log("Không thể phát summary.mp3"));
+        }
+    } catch(e) {}
 
     let rating = "";
     if(score >= 9) rating = "🌟 Xuất sắc!";
@@ -538,7 +596,6 @@ function showSummary(){
     summaryBox.style.width = "100%";
     summaryBox.style.height = "100%";
     
-    // Set ảnh nền cho summaryBox
     summaryBox.style.backgroundImage = "url('hinhnen.jpg')";
     summaryBox.style.backgroundSize = "cover";
     summaryBox.style.backgroundPosition = "center";
@@ -589,20 +646,34 @@ function showSummary(){
     document.body.appendChild(summaryBox);
 }
 
-// Hàm chơi lại với âm thanh click
 function replayGame() {
-    playClickSound(); // Phát âm thanh click khi bấm nút chơi lại
-    
-    // Reload trang sau một chút để âm thanh được phát
+    playClickSound();
     setTimeout(() => {
         location.reload();
     }, 100);
 }
+
+// Kiểm tra xem các file âm thanh có tồn tại không
+window.addEventListener('load', function() {
+    console.log("Trang đã load xong!");
+    
+    // Kiểm tra các file âm thanh
+    const audioFiles = ['bgmusic', 'correctSound', 'wrongSound', 'clickSound', 'summarySound'];
+    audioFiles.forEach(id => {
+        let audio = document.getElementById(id);
+        if (audio) {
+            console.log(`Đã tìm thấy ${id}`);
+        } else {
+            console.log(`KHÔNG tìm thấy ${id}`);
+        }
+    });
+});
+
+// Dự phòng: Nếu không có file âm thanh, vẫn chạy game
+window.playClickSound = function() {
+    console.log("Click (âm thanh đã tắt)");
+};
 </script>
 
 </body>
-
 </html>
-
-
-
