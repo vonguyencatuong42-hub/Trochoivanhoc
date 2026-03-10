@@ -4,243 +4,7 @@
 <meta charset="UTF-8">
 <title>Trò Chơi Văn Học</title>
 <style>
-body{
-    margin:0;
-    font-family:"Times New Roman", serif;
-    background: url('hinhnen.jpg') no-repeat center center fixed;
-    background-size: cover;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-    color:white;
-    overflow:auto;
-    position: relative;
-}
-
-body::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
-    z-index: 0;
-}
-
-.container{
-    width:900px;
-    text-align:center;
-    position: relative;
-    z-index: 1;
-}
-
-.hidden{display:none;}
-
-h1,h2{margin:10px;}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(255,255,255,0.2);
-    backdrop-filter: blur(10px);
-    padding: 15px 20px;
-    border-radius: 15px;
-    margin-bottom: 20px;
-    border: 1px solid rgba(255,255,255,0.3);
-}
-
-#question {
-    margin: 0;
-    flex: 1;
-    text-align: left;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-}
-
-#questionCounter {
-    font-size: 20px;
-    font-weight: bold;
-    background: white;
-    color: black;
-    padding: 8px 15px;
-    border-radius: 30px;
-    border: 3px solid black;
-    backdrop-filter: blur(5px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    font-family: 'Arial Black', sans-serif;
-}
-
-#timer{
-    font-size:24px;
-    margin-top:10px;
-    transition:0.3s;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-}
-
-.redBlink{
-    color:red;
-    animation:blink 0.5s infinite;
-}
-
-@keyframes blink{
-    0%{opacity:1;}
-    50%{opacity:0.3;}
-    100%{opacity:1;}
-}
-
-@keyframes shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-10px); }
-    50% { transform: translateX(10px); }
-    75% { transform: translateX(-5px); }
-    100% { transform: translateX(0); }
-}
-
-.shake {
-    animation: shake 0.5s ease-in-out;
-}
-
-.grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:15px;
-    margin-top:20px;
-}
-
-button{
-    border:none;
-    padding:20px;
-    font-size:18px;
-    color:white;
-    cursor:pointer;
-    border-radius:12px;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255,255,255,0.2);
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-}
-
-button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-    background: rgba(255,255,255,0.2);
-    border: 1px solid white;
-}
-
-button:active {
-    transform: scale(0.95);
-}
-
-.red{background:rgba(255, 59, 111, 0.8);}
-.blue{background:rgba(58, 134, 255, 0.8);}
-.yellow{background:rgba(255, 183, 3, 0.8);}
-.green{background:rgba(45, 106, 79, 0.8);}
-
-#zoomBox{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:38px;
-    font-weight:bold;
-    text-align:center;
-    padding:30px;
-    z-index:999;
-    animation:zoomIn 0.3s ease;
-    backdrop-filter: blur(10px);
-}
-
-@keyframes zoomIn{
-    from{transform:scale(0.3);opacity:0;}
-    to{transform:scale(1);opacity:1;}
-}
-
-#streak{
-    font-size:22px;
-    margin-top:5px;
-    background: rgba(255,215,0,0.2);
-    padding: 5px 15px;
-    border-radius: 30px;
-    display: inline-block;
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255,215,0,0.5);
-}
-
-#summaryBox{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background: url('hinhnen.jpg') no-repeat center center fixed;
-    background-size: cover;
-    display:flex;
-    justify-content:center;
-    align-items:flex-start;
-    overflow-y:auto;
-    padding:40px 20px;
-    box-sizing:border-box;
-    color:white;
-    z-index:1000;
-}
-
-#summaryContent{
-    max-width:800px;
-    width:100%;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(5px);
-    padding:30px;
-    border-radius:20px;
-    font-size:18px;
-    margin:20px auto;
-    border: 2px solid rgba(255,255,255,0.2);
-    position: relative;
-    z-index: 1;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-
-.summary-correct {
-    color: #4CAF50 !important;
-    font-weight: bold;
-}
-
-.summary-wrong {
-    color: #ff4d6d !important;
-    font-weight: bold;
-}
-
-.summary-correct-answer {
-    color: #FFC107 !important;
-    font-weight: bold;
-}
-
-.replay-button {
-    padding:15px 40px;
-    font-size:18px;
-    border:none;
-    border-radius:15px;
-    cursor:pointer;
-    background:#ffd700;
-    color:black;
-    font-weight:bold;
-    transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
-
-.replay-button:hover {
-    transform: scale(1.05);
-    background: #ffed4a;
-}
-
-.replay-button:active {
-    transform: scale(0.95);
-}
+/* Giữ nguyên CSS của bạn */
 </style>
 </head>
 <body>
@@ -261,9 +25,10 @@ button:active {
 </div>
 </div>
 
-<!-- ÂM THANH - KHÔNG có autoplay, chỉ preload -->
+<!-- ÂM THANH -->
 <audio id="bgmusic" loop preload="auto">
-    <source src="Nom - Childhood Dreams.mp3" type="audio/mpeg">
+    <source src="Nom%20-%20Childhood%20Dreams.mp3" type="audio/mpeg">
+    <!-- Hoặc dùng: <source src="Nom-Childhood-Dreams.mp3" type="audio/mpeg"> -->
 </audio>
 <audio id="correctSound" preload="auto" src="votay.mp3"></audio>
 <audio id="wrongSound" preload="auto" src="tete.mp3"></audio>
@@ -271,46 +36,32 @@ button:active {
 <audio id="summarySound" preload="auto" src="summary.mp3"></audio>
 
 <script>
-// ===== NHẠC NỀN =====
 const bgMusic = document.getElementById("bgmusic");
-if(bgMusic) {
-    bgMusic.volume = 0.25;
-    console.log("Đã tìm thấy nhạc nền");
-}
+if(bgMusic) bgMusic.volume = 0.25;
 
 function playBackgroundMusic() {
     if(bgMusic) {
-        console.log("Đang phát nhạc nền...");
-        bgMusic.play()
-            .then(() => console.log("Nhạc nền đang phát"))
-            .catch(e => console.log("Không thể phát nhạc nền:", e));
-    } else {
-        console.log("Không tìm thấy nhạc nền");
+        bgMusic.play().catch(e => console.log("Không thể phát nhạc nền tự động:", e));
     }
 }
 
-// ===== ÂM THANH CLICK =====
 function playClickSound() {
     const clickSound = document.getElementById("clickSound");
     if (clickSound) {
         clickSound.currentTime = 0;
-        clickSound.play().catch(e => console.log("Không thể play click.mp3"));
+        clickSound.play().catch(e => {});
     }
 }
 
-// ===== BẮT ĐẦU TRÒ CHƠI =====
 function startGame(){
-    console.log("Bắt đầu game");
     playClickSound();
-    playBackgroundMusic(); // Phát nhạc nền khi bấm nút
-
+    playBackgroundMusic();
     document.getElementById("intro").classList.add("hidden");
     document.getElementById("game").classList.remove("hidden");
     showQuestion();
 }
     
 const questions = [
-
 {question:"Đoạn trích 'Kiều báo ân báo oán' nằm ở phần nào của truyện Kiều?",
 answers:["Đoàn tụ","Đấu tranh","Gia biến và lưu lạc","Gặp gỡ và Đính ước"],
 correct:2},
@@ -324,8 +75,7 @@ correct:1},
 answers:["Truyện Kiều","Kim Vân Kiều Truyện","Lục Vân Tiên","Truyện Người Con gái Nam Xương"],
 correct:0},
 {question:"Nội dung chính của bài thơ 'Bếp lửa' là gì?",
-answers:["Nói về tình cảm nhớ thương của người con dành cho cha mẹ đang chiến đấu ở xa","Nói về tình cảm yêu thương của người bà dành cho con và cháu","Miêu tả vẻ đẹp của hình ảnh bếp lửa mỗi buổi sớm mai","Nói về tình cảm sâu nặng, thiêng liêng của người cháu đối với người bà
-"],
+answers:["Nói về tình cảm nhớ thương của người con dành cho cha mẹ đang chiến đấu ở xa","Nói về tình cảm yêu thương của người bà dành cho con và cháu","Miêu tả vẻ đẹp của hình ảnh bếp lửa mỗi buổi sớm mai","Nói về tình cảm sâu nặng, thiêng liêng của người cháu đối với người bà"],
 correct:3},
 {question:"'Ông lão đánh cá và con cá vàng' là truyện của nước nào?",
 answers:["Ý","Anh","Nga","Đức"],
@@ -343,7 +93,6 @@ correct:1},
 answers:["Tạo ra thế giới tưởng tượng","Cho ta thấy giá trị của tình yêu","Phản ánh đời sống xã hội","Miêu tả thế giới xung quanh"],
 correct:2}
 ];
-
 
 let current=0;
 let score=0;
@@ -379,24 +128,15 @@ function showQuestion(){
 }
 
 function startTimer(){
-    if(timer){
-        clearInterval(timer);
-    }
-
+    if(timer) clearInterval(timer);
     const timerDisplay = document.getElementById("timer");
     timerDisplay.classList.remove("redBlink");
-
     let timeLeft = 10;
     timerDisplay.innerText = "⏱ " + timeLeft + " giây";
-
     timer = setInterval(()=>{
         timeLeft--;
-        if(timeLeft >= 0){
-            timerDisplay.innerText = "⏱ " + timeLeft + " giây";
-        }
-        if(timeLeft <= 3 && timeLeft > 0){
-            timerDisplay.classList.add("redBlink");
-        }
+        if(timeLeft >= 0) timerDisplay.innerText = "⏱ " + timeLeft + " giây";
+        if(timeLeft <= 3 && timeLeft > 0) timerDisplay.classList.add("redBlink");
         if(timeLeft <= 0){
             clearInterval(timer);
             checkAnswer(-1);
@@ -407,16 +147,11 @@ function startTimer(){
 function checkAnswer(index){
     if(locked) return;
     locked = true;
-
-    if(timer){
-        clearInterval(timer);
-    }
+    if(timer) clearInterval(timer);
     
     userAnswers[current] = index;
-
     let correctIndex = questions[current].correct;
     let correctText = questions[current].answers[correctIndex];
-
     let message = "";
     let bgColor = "";
 
@@ -429,9 +164,7 @@ function checkAnswer(index){
     else if(index === correctIndex){
         score++;
         streak++;
-        if(streak > maxStreak){
-            maxStreak = streak;
-        }
+        if(streak > maxStreak) maxStreak = streak;
         message = "✅ Chính xác!";
         bgColor = "rgba(82, 183, 136, 0.95)";
         document.getElementById("correctSound").play().catch(e=>{});
@@ -441,120 +174,70 @@ function checkAnswer(index){
         bgColor = "rgba(255, 77, 109, 0.95)";
         streak = 0;
         document.getElementById("wrongSound").play().catch(e=>{});
-        
         document.querySelector('.container').classList.add('shake');
-        setTimeout(() => {
-            document.querySelector('.container').classList.remove('shake');
-        }, 500);
+        setTimeout(() => document.querySelector('.container').classList.remove('shake'), 500);
     }
 
     document.getElementById("streak").innerText = "🔥 " + streak;
-
     let zoom = document.createElement("div");
     zoom.id = "zoomBox";
     zoom.style.background = bgColor;
     zoom.innerHTML = message;
     document.body.appendChild(zoom);
-
     current++;
-
     setTimeout(()=>{
         document.body.removeChild(zoom);
-        if(current < questions.length){
-            showQuestion();
-        }else{
-            showSummary();
-        }
+        if(current < questions.length) showQuestion();
+        else showSummary();
     },3000);
 }
 
 function showSummary(){
     document.getElementById("game").classList.add("hidden");
+    document.getElementById("summarySound").play().catch(e=>{});
 
-    const summarySound = document.getElementById("summarySound");
-    if (summarySound) {
-        summarySound.currentTime = 0;
-        summarySound.play().catch(e => console.log("Không thể phát âm thanh summary.mp3"));
-    }
-
-    let rating = "";
-    if(score >= 9) rating = "🌟 Xuất sắc!";
-    else if(score >= 7) rating = "👏 Rất tốt!";
-    else if(score >= 5) rating = "👍 Khá!";
-    else rating = "💪 Cần cố gắng!";
-
+    let rating = score >= 9 ? "🌟 Xuất sắc!" : score >= 7 ? "👏 Rất tốt!" : score >= 5 ? "👍 Khá!" : "💪 Cần cố gắng!";
     let summaryBox = document.createElement("div");
     summaryBox.id = "summaryBox";
-    summaryBox.style.overflowY = "auto";
-    summaryBox.style.display = "flex";
-    summaryBox.style.justifyContent = "center";
-    summaryBox.style.alignItems = "flex-start";
-    summaryBox.style.padding = "40px 20px";
-    summaryBox.style.position = "fixed";
-    summaryBox.style.top = "0";
-    summaryBox.style.left = "0";
-    summaryBox.style.width = "100%";
-    summaryBox.style.height = "100%";
-    summaryBox.style.backgroundImage = "url('hinhnen.jpg')";
-    summaryBox.style.backgroundSize = "cover";
-    summaryBox.style.backgroundPosition = "center";
-    summaryBox.style.backgroundRepeat = "no-repeat";
-    summaryBox.style.backgroundAttachment = "fixed";
-
+    summaryBox.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:url('hinhnen.jpg') center/cover fixed; overflow-y:auto; padding:40px 20px; box-sizing:border-box; z-index:1000;";
+    
     let answerList = "";
-
     questions.forEach((q, index)=>{
         let correctIndex = q.correct;
         let userIndex = userAnswers[index];
         let correctText = q.answers[correctIndex];
         let userText = (userIndex !== undefined && userIndex >= 0) ? q.answers[userIndex] : "Không trả lời";
         let userClass = (userIndex === correctIndex) ? "summary-correct" : "summary-wrong";
-
         answerList += `
             <div style="margin:15px 0;text-align:left;">
                 <b>Câu ${index+1}:</b> ${q.question}<br>
-                <span class="${userClass}">
-                    Bạn chọn: ${userText}
-                </span><br>
-                <span class="summary-correct-answer">
-                    Đáp án đúng: ${correctText}
-                </span>
+                <span class="${userClass}">Bạn chọn: ${userText}</span><br>
+                <span class="summary-correct-answer">Đáp án đúng: ${correctText}</span>
             </div>
             <hr style="border-color:rgba(255,255,255,0.2);">
         `;
     });
 
     summaryBox.innerHTML = `
-<div id="summaryContent">
+<div id="summaryContent" style="max-width:800px; margin:20px auto; background:rgba(0,0,0,0.7); backdrop-filter:blur(5px); padding:30px; border-radius:20px;">
     <h1 style="font-size:32px;">🎉 TỔNG KẾT 🎉</h1>
     <h2>Điểm: ${score}/${questions.length}</h2>
     <h3>${rating}</h3>
     <h3>🔥 Streak cao nhất: ${maxStreak}</h3>
-    <hr style="border-color:rgba(255,255,255,0.2);">
+    <hr>
     ${answerList}
     <div style="text-align:center;margin-top:30px;">
-        <button class="replay-button" onclick="replayGame()">
-            🔄 Chơi lại
-        </button>
+        <button class="replay-button" onclick="replayGame()" style="padding:15px 40px; background:#ffd700; border:none; border-radius:15px; cursor:pointer; font-weight:bold;">🔄 Chơi lại</button>
     </div>
 </div>
 `;
-
     document.body.appendChild(summaryBox);
 }
 
 function replayGame() {
     playClickSound();
-    setTimeout(() => {
-        location.reload();
-    }, 100);
+    setTimeout(() => location.reload(), 100);
 }
-
-// Kiểm tra khi trang load
-window.addEventListener('load', function() {
-    console.log("Trang đã load xong");
-    console.log("File nhạc nền:", bgMusic ? bgMusic.src : "Không tìm thấy");
-});
 </script>
 </body>
 </html>
